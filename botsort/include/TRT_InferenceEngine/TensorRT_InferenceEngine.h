@@ -10,7 +10,14 @@
 
 #include <NvInfer.h>
 #include <NvOnnxParser.h>
+#ifdef _MSC_VER
+#define u_int8_t uint8_t
+// for a function gethostname
+#include <winsock2.h>
+#pragma comment(lib, "ws2_32.lib")
+#else// _MSC_VER
 #include <unistd.h>
+#endif// !_MSC_VER
 
 #include <boost/filesystem.hpp>
 #include <opencv2/opencv.hpp>

@@ -1,8 +1,16 @@
 #pragma once
 
-#include <cstdint>
+#ifdef _MSC_VER
+// to prevent an error following,
+// Error C2589 '(': illegal token on right side of '::')
+// Error C2059 syntax error : '::'
+// from srd::min and std::max define NOMINMAX that including windows.h
+#define NOMINMAX
+#endif // !_MSC_VER
+
 #include <Eigen/Core>
 #include <Eigen/Dense>
+#include <cstdint>
 #include <optional>
 #include <utility>
 #include <vector>

@@ -95,8 +95,24 @@ std::string inference_backend::TensorRTInferenceEngine::get_engine_path(
             "/" + boost::filesystem::path(onnx_model_path).stem().string();
 
     // Hostname
+#ifdef _MSC_VER
+    WSADATA wsaData;
+    int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (err != 0) {
+        /* Tell the user that we could not find a usable */
+        /* Winsock DLL.                                  */
+        printf("WSAStartup failed with error: %d\n", err);
+        //return 1;
+    }
+#endif// !_MSC_VER
     char hostname[1024];
-    gethostname(hostname, sizeof(hostname));
+    int res = gethostname(hostname, sizeof(hostname));
+#ifdef _MSC_VER
+    if (res == SOCKET_ERROR) {
+        auto iError = WSAGetLastError();
+        hostname[0] = '\0';
+    }
+#endif// !_MSC_VER
     std::string suffix(hostname);
 
     // TensorRT version
