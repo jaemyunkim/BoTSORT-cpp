@@ -24,3 +24,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${botsort_INCLUDE_DIRS})
 # Link libraries
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 target_link_libraries(${PROJECT_NAME} botsort)
+
+# set environment for MSVC in visual studio user file
+if(MSVC)
+    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_ENVIRONMENT 
+        "PATH=\
+${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${Configuration};\
+${OpenCV_INSTALL_PATH}/bin/$<$<CONFIG:Debug>:Debug>$<$<NOT:$<CONFIG:Debug>>:Release>;\
+${TENSORRT_LIBRARY_DIR};\
+%PATH%"
+    )
+endif(MSVC)
