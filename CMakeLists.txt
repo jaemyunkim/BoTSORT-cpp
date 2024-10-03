@@ -26,6 +26,9 @@ set(CMAKE_INSTALL_BINDIR bin)
 set(CMAKE_INSTALL_LIBDIR lib)
 set(CMAKE_INSTALL_INCLUDEDIR include)
 
+# Add cmake path to find packages
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+
 # Check OpenCV and Eigen3
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)

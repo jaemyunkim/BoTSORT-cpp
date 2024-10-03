@@ -46,10 +46,35 @@ else()
     message(STATUS "CUDA version ${CUDA_VERSION_STRING} found")
     target_include_directories(${PROJECT_NAME} PUBLIC ${CUDA_INCLUDE_DIRS})
 
-    target_sources(${PROJECT_NAME} PRIVATE
-        ${PROJECT_SOURCE_DIR}/src/TRT_InferenceEngine/TensorRT_InferenceEngine.cpp
-        ${PROJECT_SOURCE_DIR}/src/ReID.cpp)
-    target_link_libraries(${PROJECT_NAME} ${CUDA_LIBRARIES} nvonnxparser nvinfer)
+    # Find and link TENSORRT
+    find_package(TENSORRT)
+
+    if(NOT ${TENSORRT_FOUND})
+        message(WARNING "TENSORRT not found, ReID won't be built")
+    else()
+        message(STATUS "TensorRT Version       : ${TENSORRT_VERSION}")
+        message(STATUS "TensorRT Root(optional): ${TENSORRT_ROOT_DIR}")
+        message(STATUS "TensorRT Include Dir   : ${TENSORRT_INCLUDE_DIR}")
+        message(STATUS "TensorRT Library Dir   : ${TENSORRT_LIBRARY_DIR}")
+
+        target_include_directories(${PROJECT_NAME} PUBLIC ${TENSORRT_INCLUDE_DIR})
+
+        set(TENSORRT_LIBS
+            nvonnxparser
+            nvinfer
+        )
+        if(MSVC)
+            if(${TENSORRT_VERSION_MAJOR} GREATER_EQUAL 10)
+                list(TRANSFORM TERSORRT_LIBS APPEND "_${TENSORRT_VERSION_MAJOR}")
+            endif()
+            list(TRANSFORM TERSORRT_LIBS APPEND ".lib")
+            list(TRANSFORM TERSORRT_LIBS PREPEND "${TENSORRT_LIBRARY_DIR}/")
+        else()
+            list(TRANSFORM TENSORRT_LIBS PREPEND "$\{TENSORRT_")
+            list(TRANSFORM TENSORRT_LIBS APPEND "_LIBRARY\}")
+        endif()
+        target_link_libraries(${PROJECT_NAME} ${CUDA_LIBRARIES} ${TENSORRT_LIBS})
+    endif()
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
