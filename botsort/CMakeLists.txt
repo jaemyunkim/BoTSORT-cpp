@@ -60,8 +60,8 @@ else()
         target_include_directories(${PROJECT_NAME} PUBLIC ${TENSORRT_INCLUDE_DIR})
 
         set(TENSORRT_LIBS
-            nvonnxparser
-            nvinfer
+            ${TENSORRT_nvonnxparser_LIBRARY}
+            ${TENSORRT_nvinfer_LIBRARY}
         )
         if(MSVC)
             if(${TENSORRT_VERSION_MAJOR} GREATER_EQUAL 10)

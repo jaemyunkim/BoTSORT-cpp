@@ -109,7 +109,11 @@ macro(tensorrt_find_library _var _names _doc)
 endmacro()
 
 macro(FIND_TENSORRT_LIBS _name)
-    tensorrt_find_library(TENSORRT_${_name}_LIBRARY ${_name} "\"${_name}\" library")
+    if (MSVC AND TENSORRT_VERSION VERSION_GREATER_EQUAL 10)
+        tensorrt_find_library(TENSORRT_${_name}_LIBRARY ${_name}_10 "\"${_name}\" library")
+    else()
+        tensorrt_find_library(TENSORRT_${_name}_LIBRARY ${_name} "\"${_name}\" library")
+    endif()
     mark_as_advanced(TENSORT_${_name}_LIBRARY)
 endmacro()
 
